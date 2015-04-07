@@ -55,21 +55,61 @@ var level1 = { "height":15,
             },
          "spacing":2,
          "tileheight":70,
-         "tilewidth":70
+         "tilewidth":70.
         }],
  "tilewidth":35,
  "version":1,
  "width":60
 }
-
-var tileset = doctype.createElement("img");
+var tileset = document.createElement("img");
 tileset.src = level1.tilesets[0].image;
 
 var LAYER_COUNT = level1.layers.length;
 var TILESET_COUNT_X = 14;
 var TILESET_COUNT_Y = 14;
 
+var MAP = {};
+ 
+MAP.tw = level1.layers[0].width;
+MAP.th = level1.layers[0].height;
+
 var TILE = level1.tilewidth;
 var TILESET_TILE = level1.tilesets[0].tilewidth
 var TILESET_SPACING = level1.tilesets[0].spacing;
-var TILESET_MARGINE = level1.tilesets[0].margin;
+var TILESET_MARGIN = level1.tilesets[0].margin;
+
+var LAYER_BACKGROUND = 0;
+var LAYER_PLATFORMS = 1;
+var LAYER_LADDERS = 2;
+
+function drawMap ()
+{
+	//loops through all the different layers
+	for (var layerindex = 0; layerindex < LAYER_COUNT; layerindex++)
+	{
+		var itemindex = 0;
+		
+		for (var y = 0; y < level1.layers[layerindex].height; y++)
+		{
+			for (var x = 0; x < level1.layers[layerindex].width; x++)
+			{
+				if (level1.layers[layerindex].data[itemindex] != 0)
+				{
+					var tileindex = level1.layers[layerindex].data[itemindex];
+					
+					var sx = TILESET_MARGIN +
+						(tileset % TILESET_COUNT_X - 1) * (TILESET_TILE + TILESET_SPACING);
+						
+					var sy = TILESET_MARGIN +
+						(Math.floor(tileindex / TILESET_COUNT_Y)) * (TILESET_TILE + TILESET_SPACING);
+						
+					context.drawImage(tileset, 
+									sx, sy,
+									TILESET_TILE, TILESET_TILE, x * TILE, (y - 1) * TILE,
+									TILESET_TILE, TILESET_TILE);
+				}
+			itemindex++;
+			}
+		}
+	}
+};
