@@ -28,12 +28,12 @@ Player.prototype.update = function(deltaTime)
 	//check for the presses of the keys 
 	left = (keyboard.isKeyDown(keyboard.KEY_LEFT));
 	right = (keyboard.isKeyDown(keyboard.KEY_RIGHT));
-	jump = (keyboard.isKeyDown(keyboard.KEY.SPACE));
+	jump = (keyboard.isKeyDown(keyboard.KEY_SPACE));
 
 	var wasleft = this.velocity.x < 0;
 	var wasright = this.velocity.y < 0;
 	var falling = this.falling;
-	var acceleration = Vector2;
+	var acceleration = new Vector2();
 	acceleration.y = GRAVITY;
 	
 	if (left)
@@ -60,7 +60,7 @@ Player.prototype.update = function(deltaTime)
 	this.velocity.y = bound(this.velocity.y + (deltaTime * acceleration.y), -MAXDY, MAXDY);
 	
 	if (wasleft && (this.velocity.x > 0) ||
-		wasright && (this.velocity.x) < 0)
+		wasright && (this.velocity.x) > 0)
 		this.velocity.x = 0;
 		
 	////////////////////////////////////////////////
@@ -71,11 +71,11 @@ Player.prototype.update = function(deltaTime)
 
 	var nx = (this.position.x) % TILE;
 	var ny = (this.position.y) % TILE;
+	var cell = cellattilecoord(LAYER_PLATFORMS, tx, ty);
 	
-	var cell = cellattilecoord(LAYER_PLATFORMS, TX, TY);
-	var cellright = cellattilecoord(LAYER_PLATFORMS, TX + 1, TY);
-	var celldown = cellattilecoord(LAYER_PLATFORMS, TX, TY + 1);
-	var celldiag = cellattilecoord(LAYER_PLATFORMS, TX + 1, TY + 1);
+	var cellright = cellattilecoord(LAYER_PLATFORMS, tx + 1, ty);
+	var celldown = cellattilecoord(LAYER_PLATFORMS, tx, ty + 1);
+	var celldiag = cellattilecoord(LAYER_PLATFORMS, tx + 1, ty + 1);
 	///////////////////////////////////////////////
 	//Check for collision
 	if (this.velocity.y > 0)
@@ -87,43 +87,41 @@ Player.prototype.update = function(deltaTime)
 			this.falling = false;
 			this.jumping = false;
 			ny = 0; //not overlapping the cell below
-
-			else if (this.velocity.y < 0)
-			{
-				if((cell && !celldown) || (cellright && !celldiag && nx))
-				{
-					this.position.y = tiletopixel(ty + 1);
-					this.velocity.y = 0;
-					
-					cell = celldown;
-					cellright = celldiag;
-					ny = 0;
-				
-				}
-			}
-			//right
-			if (this.velocity.x > 0)
-			{
-				if ((cellright && !cell)) ||
-				cellright && !celldiag && ny))
-				{
-					this.position.x = tiletopixel(tx);
-					this.velocity = 0;
-				}
-			}
-			else if (this.velocity.x < 0)
-			{
-				if ((cell && !cellright) || (celldown && !celldiag && ny))
-				{
-					this.position.x = tiletopixel(tx + 1);
-					this.velocity = 0;
-				}
-			}
 		}
-	
 	}
-	
+	else if (this.velocity.y < 0)
+	{
+		if((cell && !celldown) || (cellright && !celldiag && nx))
+		{
+			this.position.y = tiletopixel(ty + 1);
+			this.velocity.y = 0;
+			
+			cell = celldown;
+			cellright = celldiag;
+			ny = 0;
+		
+		}
+	}
+			//right
+	if (this.velocity.x > 0)
+	{
+		if ((cellright && !cell ||
+		cellright && !celldiag && ny))
+		{
+			this.position.x = tiletopixel(tx);
+			this.velocity = 0;
+		}
+	}
+	else if (this.velocity.x < 0)
+	{
+		if ((cell && !cellright) || (celldown && !celldiag && ny))
+		{
+			this.position.x = tiletopixel(tx + 1);
+			this.velocity = 0;
+		}
+	}
 };
+	
 
 Player.prototype.draw = function(context)
 {

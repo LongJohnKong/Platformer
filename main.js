@@ -47,7 +47,7 @@ var GRAVITY = METER * 9.8 * 6;
 
 	//maximum velocities
 var MAXDX = METER * 10;
-var MAXDX = METER * 15;
+var MAXDY = METER * 15;
 
 
 var ACCEL = MAXDX * 2;
@@ -109,7 +109,7 @@ function cellattilecoord(layer, tx, ty)
 	if(ty >= MAP.th)
 		return 0;
 	
-	return cells[layer][tx][ty];
+	return cells[layer][ty][tx];
 };
 
 function tiletopixel(tile)
