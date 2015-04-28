@@ -49,15 +49,37 @@ var GRAVITY = METER * 9.8 * 6;
 var MAXDX = METER * 10;
 var MAXDY = METER * 15;
 
-
 var ACCEL = MAXDX * 2;
 
 var FRICTION = MAXDX * 6;
 
 var JUMP = METER * 1500;
 
+// ------------------- A D D  A U D I O ---------------------------------------
 
-
+//var music = new Audio('name.extention');
+//music.loop = true;
+//music.play();
+//
+//var isSFXPlaying = false;
+//var sfx = new Audio('name.extention');
+//sfx.onended = function() { isSFXPlaying = false };
+//
+//var music = new Howl(
+//{
+//		urls: ["name.extention"],
+//		loop : true,
+//		buffer : true,
+//		volume : 0.5
+//});
+//
+//sfx.player = function() {
+//	if (!isSFXPlaying)
+//	{
+//		sfx.play();
+//		isSFXPlaying = true;
+//	}
+//}
 var cells = [];
 function initialise()
 {
@@ -90,7 +112,7 @@ function initialise()
 	}
 }
 
-function cellatpixelcoord(layer, x, y)
+function cellatpixelcoord(layers, x, y)
 {
 	if(x < 0 || x > SCREEN_WIDTH || y < 0)
 		return 1;
@@ -98,18 +120,18 @@ function cellatpixelcoord(layer, x, y)
 	if(y > SCREEN_HEIGHT)
 		return 0;
 	
-	return cellattilecoord(layer, tiletopixel(x), pixeltotile(y));
+	return cellattilecoord(layers, tiletopixel(x), pixeltotile(y));
 };
 
-function cellattilecoord(layer, tx, ty)
+function cellattilecoord(layers, tx, ty)
 {
-	if(tx < 0 || tx >+ MAP.tw || ty < 0)
+	if(tx < 0 || tx >= MAP.tw || ty < 0)
 		return 1;
 		
 	if(ty >= MAP.th)
 		return 0;
 	
-	return cells[layer][ty][tx];
+	return cells[layers][ty][tx];
 };
 
 function tiletopixel(tile)

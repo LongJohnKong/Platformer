@@ -56,7 +56,7 @@ var level1 =
             },
          "spacing":2,
          "tileheight":70,
-         "tilewidth":70.
+         "tilewidth":70
         }],
  "tilewidth":35,
  "version":1,
@@ -75,7 +75,7 @@ MAP.tw = level1.layers[0].width;
 MAP.th = level1.layers[0].height;
 
 var TILE = level1.tilewidth;
-var TILESET_TILE = level1.tilesets[0].tilewidth
+var TILESET_TILE = level1.tilesets[0].tilewidth;
 var TILESET_SPACING = level1.tilesets[0].spacing;
 var TILESET_MARGIN = level1.tilesets[0].margin;
 
@@ -83,8 +83,33 @@ var LAYER_BACKGROUND = 0;
 var LAYER_PLATFORMS = 1;
 var LAYER_LADDERS = 2;
 
+var worldOffsetX = 0;
+
 function drawMap ()
 {
+	var maxTiles = Math.floor(SCREEN_WIDTH / TILE) + 2;
+
+	var tileX= pixeltotile(player.position.x);
+	
+	var offsetX = TILE + Math.floor(player.position.x % TILE);
+
+	var startX = tileX - Math.floor(maxTiles / 2);
+	
+	if(startX < -1)
+	{
+		startX = 0;
+		offsetX = 0;
+	}
+	
+	if(startX > Map.tw - maxTiles)
+	{
+		startX = Map.tw - maxTiles + 1;
+		offsetX = TILE;
+	}
+	
+	worldOffsetX = startX * TILE + offsetX;
+	
+	
 	//loops through all the different layers
 	for (var layerindex = 0; layerindex < LAYER_COUNT; layerindex++)
 	{
@@ -92,13 +117,16 @@ function drawMap ()
 		
 		for (var y = 0; y < level1.layers[layerindex].height; y++)
 		{
-			for (var x = 0; x < level1.layers[layerindex].width; x++)
+		
+			itemindex = y * level1.layers[layerindex].startX
+		
+			for (var x = startX; x < level1.layers[layerindex].width + startX; x++)
 			{
 				if (level1.layers[layerindex].data[itemindex] != 0)
 				{
 					var tileindex = level1.layers[layerindex].data[itemindex];
 					
-					var sx = tileindex +
+					var sx = TILESET_MARGIN +
 						(tileindex % TILESET_COUNT_X - 1) * (TILESET_TILE + TILESET_SPACING);
 						
 					var sy = TILESET_MARGIN +
@@ -106,7 +134,8 @@ function drawMap ()
 						
 					context.drawImage(tileset, 
 									sx, sy,
-									TILESET_TILE, TILESET_TILE, x * TILE, (y - 1) * TILE,
+									TILESET_TILE, TILESET_TILE, 
+				/* change ->*/		(x - startX)*TILE - offsetX, (y - 1),
 									TILESET_TILE, TILESET_TILE);
 				}
 			itemindex++;
