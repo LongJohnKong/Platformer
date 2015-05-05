@@ -102,14 +102,17 @@ Player.prototype.update = function(deltaTime)
 			}
 		}
 	}
+	
+	if(keyboard.isKeyDown(keyboard.KEY_SPACE) == true)
+	{
+		jump = true;
+	}
 
 	var wasleft = this.velocity.x < 0;
 	var wasright = this.velocity.x > 0;
 	var falling = this.falling;
-	var acceleration = new Vector2;
-	
-	var ddx =0;
-	var ddy = GRAVITY;
+	var acceleration = new Vector2();
+	acceleration.y = GRAVITY;
 	
 	if (left)
 		acceleration.x -= ACCEL;
@@ -121,11 +124,12 @@ Player.prototype.update = function(deltaTime)
 	else if (wasright)
 		acceleration.x -= FRICTION;
 	
-	if (jump && !this.jumpinf && !falling)
+	if (jump && !this.jumping && !falling)
 	{
 		acceleration.y -= JUMP;
 		this.jumping = true;
 	}
+	
 	
 	//adds velocity 
 	this.position.y = Math.floor(this.position.y + (deltaTime * this.velocity.y));
@@ -135,7 +139,7 @@ Player.prototype.update = function(deltaTime)
 	this.velocity.y = bound(this.velocity.y + (deltaTime * acceleration.y), -MAXDY, MAXDY);
 	
 	if (wasleft && (this.velocity.x > 0) ||
-		wasright && (this.velocity.x) > 0)
+		wasright && (this.velocity.x < 0))
 		this.velocity.x = 0;
 		
 	////////////////////////////////////////////////
@@ -174,7 +178,6 @@ Player.prototype.update = function(deltaTime)
 			cell = celldown;
 			cellright = celldiag;
 			ny = 0;
-		
 		}
 	}
 			//right
@@ -184,7 +187,7 @@ Player.prototype.update = function(deltaTime)
 		cellright && !celldiag && ny))
 		{
 			this.position.x = tiletopixel(tx);
-			this.velocity = 0;
+			this.velocity.x = 0;
 		}
 	}
 	else if (this.velocity.x < 0)
@@ -192,7 +195,7 @@ Player.prototype.update = function(deltaTime)
 		if ((cell && !cellright) || (celldown && !celldiag && ny))
 		{
 			this.position.x = tiletopixel(tx + 1);
-			this.velocity = 0;
+			this.velocity.x = 0;
 		}
 	}
 };
