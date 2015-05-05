@@ -4,7 +4,10 @@ var context = canvas.getContext("2d");
 var STATE_GAME = 1;
 var STATE_RESET = 2;
 var STATE_WIN = 3;
+var STATE_FAIL = 4;
 var gamestate = STATE_GAME;
+
+var lives = 3;
 
 function runGame(deltaTime)
 {
@@ -13,14 +16,21 @@ function runGame(deltaTime)
 
 function runWin(deltaTime)
 {
-	context.fillStyle = "000";
-	context.font = "24px Ariel";
-	context.fillText("You Win!", 100, 250);
+	context.fillStyle = "#000";
+	context.font = "50px Ariel";
+	context.fillText("You Win!", 250, 240);
 }
 
 function runReset(deltaTime)
 {
 
+}
+
+function runFail(deltaTime)
+{
+	context.fillStyle = "#000";
+	context.font = "50px Ariel";
+	context.fillText("You Lost!", 250, 240);
 }
 
 var startFrameMillis = Date.now();
@@ -214,12 +224,16 @@ function run()
 		runGame(deltaTime);
 		break;
 		
-		case STATE_GAME:
-		runGame(deltaTime);
+		case STATE_WIN:
+		runWin(deltaTime);
 		break;
 		
-		case STATE_GAME:
-		runGame(deltaTime);
+		case STATE_RESET:
+		runReset(deltaTime);
+		break;
+		
+		case STATE_FAIL:
+		runFail(deltaTime);
 		break;
 	}
 
@@ -227,14 +241,26 @@ function run()
 	{
 		player = new Player();
 		gamestate = STATE_RESET;
+		lives = lives-1
 	}
 	
-	if (player.position.x > 700)
+	if (lives<0)
+	{
+		gamestate = STATE_FAIL;
+		lives = 3;
+	}
+	
+	if (player.position.x > 1700)
 	{
 		gamestate = STATE_WIN;
 	}
 	
 	drawMap();	
+		
+	context.fillStyle = "#000";
+	context.font="14px Arial";
+	context.fillText(lives, 125, 32, 100);
+	
 		
 	// draw the FPS
 	context.fillStyle = "#f00";
