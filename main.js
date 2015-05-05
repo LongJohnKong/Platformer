@@ -4,7 +4,6 @@ var context = canvas.getContext("2d");
 var startFrameMillis = Date.now();
 var endFrameMillis = Date.now();
 
-
 // This function will return the time in seconds since the function 
 // was last called
 // You should only call this function once per frame
@@ -58,35 +57,29 @@ var JUMP = METER * 1500;
 
 // ------------------- A D D  A U D I O ---------------------------------------
 
-//var music = nfew Audio('rollinat5.mp3');
+//var music = new Audio('name.extention');
 //music.loop = true;
 //music.play();
-
-var isSFXPlaying = false;
-var sfx = new Audio('name.extention');
-sfx.onended = function() { isSFXPlaying = false };
-
-var music = new Howl(
-{
-		urls: ["rollinat5.mp3"],
-		loop : true,
-		buffer : true,
-		volume : 1
-});
-
-
-
-music.play()
-
-
-
-sfx.player = function() {
-	if (!isSFXPlaying)
-	{
-		sfx.play();
-		isSFXPlaying = true;
-	}
-}
+//
+//var isSFXPlaying = false;
+//var sfx = new Audio('name.extention');
+//sfx.onended = function() { isSFXPlaying = false };
+//
+//var music = new Howl(
+//{
+//		urls: ["name.extention"],
+//		loop : true,
+//		buffer : true,
+//		volume : 0.5
+//});
+//
+//sfx.player = function() {
+//	if (!isSFXPlaying)
+//	{
+//		sfx.play();
+//		isSFXPlaying = true;
+//	}
+//}
 var cells = [];
 function initialise()
 {
@@ -162,10 +155,8 @@ function bound(value, min, max)
 };
 
 // load an image to draw
-var hud = document.createElement("img");
-hud.src = "hud.png";
-
-
+var chuckNorris = document.createElement("img");
+chuckNorris.src = "hero.png";
 
 var keyboard = new Keyboard();
 var player = new Player();
@@ -181,7 +172,7 @@ function run()
 	player.update(deltaTime);
 	player.draw(context);
 	
-	context.drawImage(hud, SCREEN_WIDTH/-400 - hud.width/2, SCREEN_HEIGHT/2 - hud.height/2);
+	//context.drawImage(chuckNorris, SCREEN_WIDTH/2 - chuckNorris.width/2, SCREEN_HEIGHT/2 - chuckNorris.height/2);
 	
 		
 	// update the frame counter 
@@ -200,7 +191,6 @@ function run()
 	context.fillStyle = "#f00";
 	context.font="14px Arial";
 	context.fillText("FPS: " + fps, 5, 20, 100);
-	
 }
 
 
